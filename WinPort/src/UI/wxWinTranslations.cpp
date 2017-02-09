@@ -56,6 +56,7 @@ wxColour ConsoleBackground2wxColor(USHORT attributes)
 
 static int wxKeyCode2WinKeyCode(int code)
 {
+	static int s_hjkl_mode = 0;
 	switch (code) {
 	case WXK_BACK: return  VK_BACK;
 	case WXK_TAB: return VK_TAB;
@@ -164,13 +165,22 @@ static int wxKeyCode2WinKeyCode(int code)
 	case L',': return VK_OEM_COMMA;
 	case L'-': return VK_OEM_MINUS;
 	case L'+': return VK_OEM_PLUS;
-	case L'`': return VK_OEM_3;
+	case L'`': { s_hjkl_mode = !s_hjkl_mode; return VK_OEM_3; }
 	case L'[': return VK_OEM_4;
 	case L'\\': return VK_OEM_5;
 	case L']': return VK_OEM_6;
 	case L'\'': return VK_OEM_7;
 	case L'(': return '9';
 	case L')': return '0';
+	}
+
+	if (s_hjkl_mode) {
+		switch (code) {
+		case L'H': return VK_LEFT;
+		case L'J': return VK_DOWN;
+		case L'K': return VK_UP;
+		case L'L': return VK_RIGHT;
+		}
 	}
 	//fprintf(stderr, "not translated %u %lc", code, code);
 	return code;
